@@ -1,6 +1,7 @@
 import concurrent.futures
 import json
 import threading
+import time
 import webbrowser
 import requests
 
@@ -35,8 +36,12 @@ def cheapest_cities(range, origin_date, origin_city, target_city):
         try:
             data = response.json()
         except Exception as e:
+            lock.acquire()
             webbrowser.open(targeturl)
             input("Press Enter to continue...")
+            time.sleep(10)
+            print("人机认证完成，retrying...")
+            lock.release()
             response = requests.get(url.format(origin_city, city))
             data = response.json()
         print(data)
